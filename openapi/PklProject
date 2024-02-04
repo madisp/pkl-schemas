@@ -9,7 +9,7 @@ dependencies {
 package {
   name = "openapi"
   baseUri = "package://madis.pink/pkl/openapi"
-  version = "0.0.1"
+  version = read?("env:PKL_PUBLISH_VERSION") ?? "0.0.1-dev"
   license = "MIT"
   packageZipUrl = "https://madis.pink/pkl-zip/openapi@\(version).zip"
 
