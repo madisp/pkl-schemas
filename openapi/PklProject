@@ -11,7 +11,7 @@ package {
   baseUri = "package://madis.pink/pkl/openapi"
   version = read?("env:PKL_PUBLISH_VERSION") ?? "0.0.1-dev"
   license = "MIT"
-  packageZipUrl = "https://github.com/madisp/pkl-schemas/releases/download/\(version)/openapi@\(version).zip"
+  packageZipUrl = "https://github.com/madisp/pkl-schemas/releases/download/v\(version)/openapi@\(version).zip"
 
   exclude {
     "build.gradle.kts"
