@@ -84,9 +84,7 @@ paths {
           description = "unexpected error"
           content {
             ["application/json"] {
-              schema = $.ref {
-                `$ref` = "#/components/schemas/Error"
-              }
+              schema = $.ref("#/components/schemas/Error")
             }
           }
         }
@@ -100,9 +98,7 @@ paths {
         required = true
         content {
           ["application/json"] {
-            schema = $.ref {
-              `$ref` = "#/components/schemas/NewPet"
-            }
+            schema = $.ref("#/components/schemas/NewPet")
           }
         }
       }
@@ -111,9 +107,7 @@ paths {
           description = "pet response"
           content {
             ["application/json"] {
-              schema = $.ref {
-                `$ref` = "#/components/schemas/Pet"
-              }
+              schema = $.ref("#/components/schemas/Pet")
             }
           }
         }
@@ -121,9 +115,7 @@ paths {
           description = "unexpected error"
           content {
             ["application/json"] {
-              schema = $.ref {
-                `$ref` = "#/components/schemas/Error"
-              }
+              schema = $.ref("#/components/schemas/Error")
             }
           }
         }
@@ -151,9 +143,7 @@ paths {
           description = "pet response"
           content {
             ["application/json"] {
-              schema = $.ref {
-                `$ref` = "#/components/schemas/Pet"
-              }
+              schema = $.ref("#/components/schemas/Pet")
             }
           }
         }
@@ -161,9 +151,7 @@ paths {
           description = "unexpected error"
           content {
             ["application/json"] {
-              schema = $.ref {
-                `$ref` = "#/components/schemas/Error"
-              }
+              schema = $.ref("#/components/schemas/Error")
             }
           }
         }
@@ -192,9 +180,7 @@ paths {
           description = "unexpected error"
           content {
             ["application/json"] {
-              schema = $.ref {
-                `$ref` = "#/components/schemas/Error"
-              }
+              schema = $.ref("#/components/schemas/Error")
             }
           }
         }
@@ -207,9 +193,7 @@ components {
   schemas {
     ["Pet"] {
       allOf {
-        $.ref {
-          `$ref` = "#/components/schemas/NewPet"
-        }
+        $.ref("#/components/schemas/NewPet")
         new Schema {
           type = "object"
           required {

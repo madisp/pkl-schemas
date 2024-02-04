@@ -12,4 +12,10 @@ package {
   version = "0.0.1"
   license = "MIT"
   packageZipUrl = "https://madis.pink/pkl-zip/openapi@\(version).zip"
+
+  exclude {
+    "build.gradle.kts"
+    "build/**"
+    "examples/**"
+  }
 }
