@@ -25,3 +25,11 @@ jobs:
         with:
           name: openapi
           path: openapi/build/generated/pkl/packages/
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: openapi/build/generated/pkl/packages/*
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
