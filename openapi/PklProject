@@ -1,0 +1,15 @@
+amends "pkl:Project"
+
+dependencies {
+  ["openapi"] {
+    uri = "package://pkg.pkl-lang.org/pkl-pantry/org.openapis.v3@1.0.0"
+  }
+}
+
+package {
+  name = "openapi"
+  baseUri = "package://madis.pink/pkl/openapi"
+  version = "1.0.0"
+  license = "MIT"
+  packageZipUrl = "https://madis.pink/pkl-zip/openapi@\(version).zip"
+}

@@ -1,0 +1,303 @@
+amends "../OpenApi.pkl"
+
+import "@openapi/Schema.pkl"
+import "@openapi/Reference.pkl"
+
+// pkl equivalent of
+// https://github.com/OAI/OpenAPI-Specification/blob/main/examples/v3.0/link-example.yaml
+// render back to yaml with:
+// pkl eval -f yaml examples/linkExample.pkl
+
+openapi = "3.0.0"
+
+info {
+  title = "Link Example"
+  version = "1.0.0"
+}
+
+paths {
+  ["/2.0/users/{username}"] {
+    get {
+      operationId = "getUserByName"
+      parameters {
+        new Parameter {
+          name = "username"
+          `in` = "path"
+          required = true
+          schema = new Schema {
+            type = "string"
+          }
+        }
+      }
+      responses {
+        ["200"] = new Response {
+          description = "The User"
+          content {
+            ["application/json"] {
+              schema = new Reference {
+                `$ref` = "#/components/links/UserRepositories"
+              }
+            }
+          }
+          links {
+            ["userRepository"] = new Reference {
+              `$ref` = "#/components/links/UserRepository"
+            }
+          }
+        }
+      }
+    }
+  }
+  ["/2.0/repositories/{username}/{slug}"] {
+    get {
+      operationId = "getRepository"
+      parameters {
+        new Parameter {
+          name = "username"
+          `in` = "path"
+          required = true
+          schema = new Schema {
+            type = "string"
+          }
+        }
+        new Parameter {
+          name = "slug"
+          `in` = "path"
+          required = true
+          schema = new Schema {
+            type = "string"
+          }
+        }
+      }
+      responses {
+        ["200"] = new Response {
+          description = "The repository"
+          content {
+            ["application/json"] {
+              schema = new Reference {
+                `$ref` = "#/components/schemas/repository"
+              }
+            }
+          }
+          links {
+            ["repositoryPullRequests"] = new Reference {
+              `$ref` = "#/components/links/RepositoryPullRequests"
+            }
+          }
+        }
+      }
+    }
+  }
+  ["/2.0/repositories/{username}/{slug}/pullrequests"] {
+    get {
+      operationId = "getPullRequestsByRepository"
+      parameters {
+        new Parameter {
+          name = "username"
+          `in` = "path"
+          required = true
+          schema = new Schema {
+            type = "string"
+          }
+        }
+        new Parameter {
+          name = "slug"
+          `in` = "path"
+          required = true
+          schema = new Schema {
+            type = "string"
+          }
+        }
+        new Parameter {
+          name = "state"
+          `in` = "query"
+          schema = new Schema {
+            type = "string"
+            enum {
+              "open"
+              "merged"
+              "declined"
+            }
+          }
+        }
+      }
+      responses {
+        ["200"] = new Response {
+          description = "an array of pull request objects"
+          content {
+            ["application/json"] {
+              schema = new Schema {
+                type = "array"
+                items = new Reference {
+                  `$ref` = "#/componentes/schemas/pullrequest"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  ["/2.0/repositories/{username}/{slug}/pullrequests/{pid}"] {
+    get {
+      operationId = "getPullRequestsById"
+      parameters {
+        new Parameter {
+          name = "username"
+          `in` = "path"
+          required = true
+          schema = new Schema {
+            type = "string"
+          }
+        }
+        new Parameter {
+          name = "slug"
+          `in` = "path"
+          required = true
+          schema = new Schema {
+            type = "string"
+          }
+        }
+        new Parameter {
+          name = "pid"
+          `in` = "path"
+          required = true
+          schema = new Schema {
+            type = "string"
+          }
+        }
+      }
+      responses {
+        ["200"] = new Response {
+          description = "a pull request object"
+          content {
+            ["application/json"] {
+              schema = new Reference {
+                `$ref` = "#/components/schemas/pullrequest"
+              }
+            }
+          }
+          links {
+            ["pullRequestMerge"] = new Reference {
+              `$ref` = "#/components/links/PullRequestMerge"
+            }
+          }
+        }
+      }
+    }
+  }
+  ["/2.0/repositories/{username}/{slug}/pullrequests/{pid}/merge"] {
+    post {
+      operationId = "mergePullRequest"
+      parameters {
+        new Parameter {
+          name = "username"
+          `in` = "path"
+          required = true
+          schema = new Schema {
+            type = "string"
+          }
+        }
+        new Parameter {
+          name = "slug"
+          `in` = "path"
+          required = true
+          schema = new Schema {
+            type = "string"
+          }
+        }
+        new Parameter {
+          name = "pid"
+          `in` = "path"
+          required = true
+          schema = new Schema {
+            type = "string"
+          }
+        }
+      }
+      responses {
+        ["204"] = new Response {
+          description = "the PR was successfully merged"
+        }
+      }
+    }
+  }
+}
+
+components {
+  links {
+    ["UserRepositories"] = new Link {
+      // returns array of '#/components/schemas/repository'
+      operationId = "getRepositoriesByOwner"
+      parameters {
+        ["username"] = "$response.body#/username"
+      }
+    }
+    ["UserRepository"] = new Link {
+      // returns '#/components/schemas/repository'
+      operationId = "getRepository"
+      parameters {
+        ["username"] = "$response.body#/owner/username"
+        ["slug"] = "$response.body#/slug"
+      }
+    }
+    ["RepositoryPullRequests"] = new Link {
+      // returns '#/components/schemas/pullrequest'
+      operationId = "getPullRequestsByRepository"
+      parameters {
+        ["username"] = "$response.body#/owner/username"
+        ["slug"] = "$response.body#/slug"
+      }
+    }
+    ["PullRequestMerge"] = new Link {
+      // executes /2.0/repositories/{username}/{slug}/pullrequests/{pid}/merge
+      operationId = "mergePullRequest"
+      parameters {
+        ["username"] = "$response.body#/author/username"
+        ["slug"] = "$response.body#/repository/slug"
+        ["pid"] = "$response.body#/id"
+      }
+    }
+  }
+  schemas {
+    ["user"] = new Schema {
+      type = "object"
+      properties {
+        ["username"] = new Schema.PropertySchema {
+          type = "string"
+        }
+        ["uuid"] = new Schema.PropertySchema {
+          type = "string"
+        }
+      }
+    }
+    ["repository"] = new Schema {
+      type = "object"
+      properties {
+        ["slug"] = new Schema.PropertySchema {
+          type = "string"
+        }
+        ["owner"] = new Reference {
+          `$ref` = "#/components/schemas/user"
+        }
+      }
+    }
+    ["pullrequest"] = new Schema {
+      type = "object"
+      properties {
+        ["id"] = new Schema.PropertySchema {
+          type = "integer"
+        }
+        ["title"] = new Schema.PropertySchema {
+          type = "string"
+        }
+        ["repository"] = new Reference {
+          `$ref` = "#/components/schemas/repository"
+        }
+        ["author"] = new Reference {
+          `$ref` = "#/components/schemas/user"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,208 @@
+@ModuleInfo { minPklVersion = "0.25.1" }
+open module pink.madis.openapi.v3.OpenApi
+
+import "@openapi/Schema.pkl"
+import "@openapi/Reference.pkl"
+
+openapi: String
+info: Info?
+servers: Listing<Server>?
+paths: Paths
+components: Components?
+security: Listing<SecurityRequirement>?
+tags: Listing<Tag>?
+externalDocs: ExternalDocumentation?
+
+typealias Paths = Mapping<String(matches(Regex("^/.*"))), PathItem>
+
+class Info {
+  title: String
+  version: String
+  description: String?
+  termsOfService: Uri?
+  contact: Contact?
+  license: License?
+}
+
+class Contact {
+  name: String?
+  url: Uri?
+  email: String?
+}
+
+class License {
+  name: String
+  url: Uri?
+}
+
+class Server {
+  url: Uri
+  description: String?
+  variables: Mapping<String, ServerVariable>?
+}
+
+class ServerVariable {
+  enum: Listing<String>(!isEmpty || default == null)
+  default: String?
+  description: String?
+}
+
+class Components {
+  schemas: Mapping<String, Schema | Reference>?
+  responses: Mapping<String, Response | Reference>?
+  parameters: Mapping<String, Parameter | Reference>?
+  examples: Mapping<String, Example | Reference>?
+  requestBodies: Mapping<String, RequestBody | Reference>?
+  headers: Mapping<String, Header | Reference>?
+  securitySchemes: Mapping<String, SecurityScheme | Reference>?
+  links: Mapping<String, Link | Reference>?
+  callbacks: Mapping<String, Callback | Reference>?
+}
+
+class PathItem {
+  $ref: Uri?
+  summary: String?
+  description: String?
+  get: Operation?
+  put: Operation?
+  post: Operation?
+  `delete`: Operation?
+  options: Operation?
+  head: Operation?
+  patch: Operation?
+  `trace`: Operation?
+  servers: Listing<Server>?
+  parameters: Listing<Parameter | Reference>?
+}
+
+class Operation {
+  tags: Listing<String>?
+  summary: String?
+  description: String?
+  externalDocs: ExternalDocumentation?
+  operationId: String?
+  parameters: Listing<Parameter | Reference>?
+  requestBody: (RequestBody | Reference)?
+  responses: Responses
+  callbacks: Mapping<String, Callback | Reference>?
+  deprecated: Boolean?
+  security: Listing<SecurityRequirement>?
+  servers: Listing<Server>?
+}
+
+class ExternalDocumentation {
+  description: String?
+  url: Uri
+}
+
+open class Parameter {
+  name: String
+  `in`: "query" | "header" | "path" | "cookie"
+  description: String?
+  required: Boolean?(`in` != "path" || this == true)
+  deprecated: Boolean?
+  allowEmptyValue: Boolean?(`in` == "query" || this == null)
+  style: String?
+  explode: Boolean?
+  allowReserved: Boolean?
+  schema: (Schema | Reference)?
+  example: unknown?
+  examples: Mapping<String, Example | Reference>?
+  content: Mapping<String, MediaType>?
+}
+
+class RequestBody {
+  description: String?
+  content: Mapping<String, MediaType>(!isEmpty)
+  required: Boolean?
+}
+
+class MediaType {
+  schema: (Schema | Reference)?
+  example: unknown?
+  examples: Mapping<String, Example | Reference>?
+  encoding: Mapping<String, Encoding>?
+}
+
+class Encoding {
+  contentType: String?
+  headers: Mapping<String, Header | Reference>?
+  style: String?
+  explode: Boolean?
+  allowReserved: Boolean?
+}
+
+local function isValidHttpStatusCode(code: Int) =
+  code.isBetween(100, 103) ||
+    code.isBetween(200, 208) ||
+    code == 226 ||
+    code.isBetween(300, 308) ||
+    code.isBetween(400, 418) ||
+    code.isBetween(421, 431) ||
+    code == 451 ||
+    code.isBetween(500, 511)
+
+typealias Responses = Mapping<String(isValidHttpStatusCode(toInt()) || this == "default"), Response | Reference>
+
+class Response {
+  description: String
+  headers: Mapping<String, Header | Reference>?
+  content: Mapping<String, MediaType>?
+  links: Mapping<String, Link | Reference>?
+}
+
+typealias Callback = Mapping<String, PathItem>
+
+class Example {
+  summary: String?
+  description: String?
+  value: unknown?
+  externalValue: Uri?
+}
+
+class Link {
+  operationRef: String?((this == null).xor(operationId == null))
+  operationId: String?
+  parameters: Mapping<String, Any>
+  requestBody: unknown?
+  description: String?
+  server: Server?
+}
+
+class Header extends Parameter {
+  name: String? = null
+  `in`: String? = null
+}
+
+class Tag {
+  name: String
+  description: String?
+  externalDocs: ExternalDocumentation?
+}
+
+class SecurityScheme {
+  type: "apiKey" | "http" | "oauth2" | "openIdConnect"
+  description: String?
+  name: String?((this == null).xor(type != "apiKey"))
+  `in`: ("query" | "header" | "cookie")?((this == null).xor(type != "apiKey"))
+  scheme: ("basic" | "bearer" | "digest" | "dpop" | "hoba" | "mutual" | "negotiate" | "oauth" | "privatetoken" | "scram-sha-1" | "scram-sha-256" | "vapid")?((this == null).xor(type != "http"))
+  bearerFormat: String?(this == null || (type == "http" && scheme == "bearer"))
+  flows: OAuthFlows?((this == null).xor(type != "oauth2"))
+  openIdConnectUrl: String?((this == null).xor(type != "openIdConnect"))
+}
+
+class OAuthFlows {
+  implicit: OAuthFlow?
+  password: OAuthFlow?
+  clientCredentials: OAuthFlow?
+  authorizationCode: OAuthFlow?
+}
+
+class OAuthFlow {
+  authorizationUrl: Uri?
+  tokenUrl: Uri?
+  refreshUrl: Uri?
+  scopes: Mapping<String, String>
+}
+
+typealias SecurityRequirement = Mapping<String, Listing<String>>

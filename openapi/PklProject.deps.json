@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "resolvedDependencies": {
+    "package://pkg.pkl-lang.org/pkl-pantry/org.openapis.v3@1": {
+      "type": "remote",
+      "uri": "projectpackage://pkg.pkl-lang.org/pkl-pantry/org.openapis.v3@1.0.0",
+      "checksums": {
+        "sha256": "bd05bd1d179ab9b9b48446564e219e2f5945515abb859d2850820060a23d71c5"
+      }
+    }
+  }
+}
