@@ -19,3 +19,17 @@ jobs:
       uses: gradle/actions/setup-gradle@v3
     - name: Run OpenAPI examples
       run: ./gradlew example_apiWithExamples example_callbackExample example_linkExample example_petstore example_petstoreExpanded example_uspto
+  build_package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '21'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Build package
+        run: ./gradlew makePackages
