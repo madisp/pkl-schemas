@@ -1,0 +1,5 @@
+import "@openapi/Reference.pkl"
+
+function ref(ref: String) = new Reference {
+  `$ref` = ref
+}

@@ -1,7 +1,8 @@
 amends "../OpenApi.pkl"
 
 import "@openapi/Schema.pkl"
-import "@openapi/Reference.pkl"
+
+import "../Utils.pkl" as $
 
 // pkl equivalent of
 // https://github.com/OAI/OpenAPI-Specification/blob/main/examples/v3.0/link-example.yaml
@@ -20,27 +21,27 @@ paths {
     get {
       operationId = "getUserByName"
       parameters {
-        new Parameter {
+        new {
           name = "username"
           `in` = "path"
           required = true
-          schema = new Schema {
+          schema {
             type = "string"
           }
         }
       }
       responses {
-        ["200"] = new Response {
+        ["200"] {
           description = "The User"
           content {
             ["application/json"] {
-              schema = new Reference {
+              schema = $.ref {
                 `$ref` = "#/components/links/UserRepositories"
               }
             }
           }
           links {
-            ["userRepository"] = new Reference {
+            ["userRepository"] = $.ref {
               `$ref` = "#/components/links/UserRepository"
             }
           }
@@ -52,35 +53,35 @@ paths {
     get {
       operationId = "getRepository"
       parameters {
-        new Parameter {
+        new {
           name = "username"
           `in` = "path"
           required = true
-          schema = new Schema {
+          schema {
             type = "string"
           }
         }
-        new Parameter {
+        new {
           name = "slug"
           `in` = "path"
           required = true
-          schema = new Schema {
+          schema {
             type = "string"
           }
         }
       }
       responses {
-        ["200"] = new Response {
+        ["200"] {
           description = "The repository"
           content {
             ["application/json"] {
-              schema = new Reference {
+              schema = $.ref {
                 `$ref` = "#/components/schemas/repository"
               }
             }
           }
           links {
-            ["repositoryPullRequests"] = new Reference {
+            ["repositoryPullRequests"] = $.ref {
               `$ref` = "#/components/links/RepositoryPullRequests"
             }
           }
@@ -92,26 +93,26 @@ paths {
     get {
       operationId = "getPullRequestsByRepository"
       parameters {
-        new Parameter {
+        new {
           name = "username"
           `in` = "path"
           required = true
-          schema = new Schema {
+          schema {
             type = "string"
           }
         }
-        new Parameter {
+        new {
           name = "slug"
           `in` = "path"
           required = true
-          schema = new Schema {
+          schema {
             type = "string"
           }
         }
-        new Parameter {
+        new {
           name = "state"
           `in` = "query"
-          schema = new Schema {
+          schema {
             type = "string"
             enum {
               "open"
@@ -122,13 +123,13 @@ paths {
         }
       }
       responses {
-        ["200"] = new Response {
+        ["200"] {
           description = "an array of pull request objects"
           content {
             ["application/json"] {
-              schema = new Schema {
+              schema {
                 type = "array"
-                items = new Reference {
+                items = $.ref {
                   `$ref` = "#/componentes/schemas/pullrequest"
                 }
               }
@@ -142,43 +143,43 @@ paths {
     get {
       operationId = "getPullRequestsById"
       parameters {
-        new Parameter {
+        new {
           name = "username"
           `in` = "path"
           required = true
-          schema = new Schema {
+          schema {
             type = "string"
           }
         }
-        new Parameter {
+        new {
           name = "slug"
           `in` = "path"
           required = true
-          schema = new Schema {
+          schema {
             type = "string"
           }
         }
-        new Parameter {
+        new {
           name = "pid"
           `in` = "path"
           required = true
-          schema = new Schema {
+          schema {
             type = "string"
           }
         }
       }
       responses {
-        ["200"] = new Response {
+        ["200"] {
           description = "a pull request object"
           content {
             ["application/json"] {
-              schema = new Reference {
+              schema = $.ref {
                 `$ref` = "#/components/schemas/pullrequest"
               }
             }
           }
           links {
-            ["pullRequestMerge"] = new Reference {
+            ["pullRequestMerge"] = $.ref {
               `$ref` = "#/components/links/PullRequestMerge"
             }
           }
@@ -190,33 +191,33 @@ paths {
     post {
       operationId = "mergePullRequest"
       parameters {
-        new Parameter {
+        new {
           name = "username"
           `in` = "path"
           required = true
-          schema = new Schema {
+          schema {
             type = "string"
           }
         }
-        new Parameter {
+        new {
           name = "slug"
           `in` = "path"
           required = true
-          schema = new Schema {
+          schema {
             type = "string"
           }
         }
-        new Parameter {
+        new {
           name = "pid"
           `in` = "path"
           required = true
-          schema = new Schema {
+          schema {
             type = "string"
           }
         }
       }
       responses {
-        ["204"] = new Response {
+        ["204"] {
           description = "the PR was successfully merged"
         }
       }
@@ -226,14 +227,14 @@ paths {
 
 components {
   links {
-    ["UserRepositories"] = new Link {
+    ["UserRepositories"] {
       // returns array of '#/components/schemas/repository'
       operationId = "getRepositoriesByOwner"
       parameters {
         ["username"] = "$response.body#/username"
       }
     }
-    ["UserRepository"] = new Link {
+    ["UserRepository"] {
       // returns '#/components/schemas/repository'
       operationId = "getRepository"
       parameters {
@@ -241,7 +242,7 @@ components {
         ["slug"] = "$response.body#/slug"
       }
     }
-    ["RepositoryPullRequests"] = new Link {
+    ["RepositoryPullRequests"] {
       // returns '#/components/schemas/pullrequest'
       operationId = "getPullRequestsByRepository"
       parameters {
@@ -249,7 +250,7 @@ components {
         ["slug"] = "$response.body#/slug"
       }
     }
-    ["PullRequestMerge"] = new Link {
+    ["PullRequestMerge"] {
       // executes /2.0/repositories/{username}/{slug}/pullrequests/{pid}/merge
       operationId = "mergePullRequest"
       parameters {
@@ -260,7 +261,7 @@ components {
     }
   }
   schemas {
-    ["user"] = new Schema {
+    ["user"] {
       type = "object"
       properties {
         ["username"] = new Schema.PropertySchema {
@@ -271,18 +272,18 @@ components {
         }
       }
     }
-    ["repository"] = new Schema {
+    ["repository"] {
       type = "object"
       properties {
         ["slug"] = new Schema.PropertySchema {
           type = "string"
         }
-        ["owner"] = new Reference {
+        ["owner"] = $.ref {
           `$ref` = "#/components/schemas/user"
         }
       }
     }
-    ["pullrequest"] = new Schema {
+    ["pullrequest"] {
       type = "object"
       properties {
         ["id"] = new Schema.PropertySchema {
@@ -291,10 +292,10 @@ components {
         ["title"] = new Schema.PropertySchema {
           type = "string"
         }
-        ["repository"] = new Reference {
+        ["repository"] = $.ref {
           `$ref` = "#/components/schemas/repository"
         }
-        ["author"] = new Reference {
+        ["author"] = $.ref {
           `$ref` = "#/components/schemas/user"
         }
       }

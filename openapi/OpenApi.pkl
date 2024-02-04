@@ -48,15 +48,15 @@ class ServerVariable {
 }
 
 class Components {
-  schemas: Mapping<String, Schema | Reference>?
-  responses: Mapping<String, Response | Reference>?
-  parameters: Mapping<String, Parameter | Reference>?
-  examples: Mapping<String, Example | Reference>?
-  requestBodies: Mapping<String, RequestBody | Reference>?
-  headers: Mapping<String, Header | Reference>?
-  securitySchemes: Mapping<String, SecurityScheme | Reference>?
-  links: Mapping<String, Link | Reference>?
-  callbacks: Mapping<String, Callback | Reference>?
+  schemas: Mapping<String, *Schema | Reference>?
+  responses: Mapping<String, *Response | Reference>?
+  parameters: Mapping<String, *Parameter | Reference>?
+  examples: Mapping<String, *Example | Reference>?
+  requestBodies: Mapping<String, *RequestBody | Reference>?
+  headers: Mapping<String, *Header | Reference>?
+  securitySchemes: Mapping<String, *SecurityScheme | Reference>?
+  links: Mapping<String, *Link | Reference>?
+  callbacks: Mapping<String, *Callback | Reference>?
 }
 
 class PathItem {
@@ -72,7 +72,7 @@ class PathItem {
   patch: Operation?
   `trace`: Operation?
   servers: Listing<Server>?
-  parameters: Listing<Parameter | Reference>?
+  parameters: Listing<*Parameter | Reference>?
 }
 
 class Operation {
@@ -81,10 +81,10 @@ class Operation {
   description: String?
   externalDocs: ExternalDocumentation?
   operationId: String?
-  parameters: Listing<Parameter | Reference>?
-  requestBody: (RequestBody | Reference)?
+  parameters: Listing<*Parameter | Reference>?
+  requestBody: (*RequestBody | Reference)?
   responses: Responses
-  callbacks: Mapping<String, Callback | Reference>?
+  callbacks: Mapping<String, *Callback | Reference>?
   deprecated: Boolean?
   security: Listing<SecurityRequirement>?
   servers: Listing<Server>?
@@ -105,9 +105,9 @@ open class Parameter {
   style: String?
   explode: Boolean?
   allowReserved: Boolean?
-  schema: (Schema | Reference)?
+  schema: (*Schema | Reference)?
   example: unknown?
-  examples: Mapping<String, Example | Reference>?
+  examples: Mapping<String, *Example | Reference>?
   content: Mapping<String, MediaType>?
 }
 
@@ -118,15 +118,15 @@ class RequestBody {
 }
 
 class MediaType {
-  schema: (Schema | Reference)?
+  schema: (*Schema | Reference)?
   example: unknown?
-  examples: Mapping<String, Example | Reference>?
+  examples: Mapping<String, *Example | Reference>?
   encoding: Mapping<String, Encoding>?
 }
 
 class Encoding {
   contentType: String?
-  headers: Mapping<String, Header | Reference>?
+  headers: Mapping<String, *Header | Reference>?
   style: String?
   explode: Boolean?
   allowReserved: Boolean?
@@ -142,13 +142,13 @@ local function isValidHttpStatusCode(code: Int) =
     code == 451 ||
     code.isBetween(500, 511)
 
-typealias Responses = Mapping<String(isValidHttpStatusCode(toInt()) || this == "default"), Response | Reference>
+typealias Responses = Mapping<String(this == "default" || isValidHttpStatusCode(toInt())), *Response | Reference>
 
 class Response {
   description: String
-  headers: Mapping<String, Header | Reference>?
+  headers: Mapping<String, *Header | Reference>?
   content: Mapping<String, MediaType>?
-  links: Mapping<String, Link | Reference>?
+  links: Mapping<String, *Link | Reference>?
 }
 
 typealias Callback = Mapping<String, PathItem>

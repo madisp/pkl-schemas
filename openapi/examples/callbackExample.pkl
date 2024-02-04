@@ -27,7 +27,7 @@ paths {
             the location where data will be sent.  Must be network accessible
             by the source server
             """
-          schema = new Schema {
+          schema {
             type = "string"
             format = "uri"
             example = "https://tonys-server.com"
@@ -35,11 +35,11 @@ paths {
         }
       }
       responses {
-        ["201"] = new Response {
+        ["201"] {
           description = "subscription successfully created"
           content {
             ["application/json"] {
-              schema = new Schema {
+              schema {
                 // TODO(madis) pkl pantry's openapi requires this, OpenAPI example doesn't have it though
                 //             does it default to "object"?
                 type = "object"
@@ -61,14 +61,14 @@ paths {
       }
       callbacks {
         // the name `onData` is a convenience locator
-        ["onData"] = new Callback {
+        ["onData"] {
           ["{$request.query.callbackUrl}/data"] {
             post {
-              requestBody = new RequestBody {
+              requestBody {
                 description = "subscription payload"
                 content {
                   ["application/json"] {
-                    schema = new Schema {
+                    schema {
                       type = "object"
                       properties {
                         ["timestamp"] = new Schema.PropertySchema {
@@ -84,13 +84,13 @@ paths {
                 }
               }
               responses {
-                ["202"] = new Response {
+                ["202"] {
                   description = """
                     Your server implementation should return this HTTP status code
                     if the data was received successfully
                     """
                 }
-                ["204"] = new Response {
+                ["204"] {
                   description = """
                     Your server should return this HTTP status code if no longer interested
                     in further updates

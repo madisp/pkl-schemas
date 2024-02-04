@@ -18,12 +18,12 @@ paths {
       operationId = "listVersionsv2"
       summary = "List API versions"
       responses {
-        ["200"] = new Response {
+        ["200"] {
           description = "200 response"
           content {
             ["application/json"] {
               examples {
-                ["foo"] = new Example {
+                ["foo"] {
                   value = new Mapping {
                     ["versions"] = new Listing {
                       new {
@@ -55,12 +55,12 @@ paths {
             }
           }
         }
-        ["300"] = new Response {
+        ["300"] {
           description = "300 response"
           content {
             ["application/json"] {
               examples {
-                ["foo"] = new Example {
+                ["foo"] {
                   value = """
                     {
                      "versions": [
@@ -103,12 +103,12 @@ paths {
       operationId = "getVersionDetailsv2"
       summary = "Show API version details"
       responses {
-        ["200"] = new Response {
+        ["200"] {
           description = "200 response"
           content {
             ["application/json"] {
               examples {
-                ["foo"] = new Example {
+                ["foo"] {
                   value {
                     version {
                       status = "CURRENT"
@@ -152,12 +152,12 @@ paths {
             }
           }
         }
-        ["203"] = new Response {
+        ["203"] {
           description = "203 response"
           content {
             ["application/json"] {
               examples {
-                ["foo"] = new Example {
+                ["foo"] {
                   value {
                     version {
                       status = "CURRENT"
