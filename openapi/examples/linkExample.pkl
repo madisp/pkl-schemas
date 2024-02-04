@@ -35,15 +35,11 @@ paths {
           description = "The User"
           content {
             ["application/json"] {
-              schema = $.ref {
-                `$ref` = "#/components/links/UserRepositories"
-              }
+              schema = $.ref("#/components/links/UserRepositories")
             }
           }
           links {
-            ["userRepository"] = $.ref {
-              `$ref` = "#/components/links/UserRepository"
-            }
+            ["userRepository"] = $.ref("#/components/links/UserRepository")
           }
         }
       }
@@ -75,15 +71,11 @@ paths {
           description = "The repository"
           content {
             ["application/json"] {
-              schema = $.ref {
-                `$ref` = "#/components/schemas/repository"
-              }
+              schema = $.ref("#/components/schemas/repository")
             }
           }
           links {
-            ["repositoryPullRequests"] = $.ref {
-              `$ref` = "#/components/links/RepositoryPullRequests"
-            }
+            ["repositoryPullRequests"] = $.ref("#/components/links/RepositoryPullRequests")
           }
         }
       }
@@ -129,9 +121,7 @@ paths {
             ["application/json"] {
               schema {
                 type = "array"
-                items = $.ref {
-                  `$ref` = "#/componentes/schemas/pullrequest"
-                }
+                items = $.ref("#/componentes/schemas/pullrequest")
               }
             }
           }
@@ -173,15 +163,11 @@ paths {
           description = "a pull request object"
           content {
             ["application/json"] {
-              schema = $.ref {
-                `$ref` = "#/components/schemas/pullrequest"
-              }
+              schema = $.ref("#/components/schemas/pullrequest")
             }
           }
           links {
-            ["pullRequestMerge"] = $.ref {
-              `$ref` = "#/components/links/PullRequestMerge"
-            }
+            ["pullRequestMerge"] = $.ref("#/components/links/PullRequestMerge")
           }
         }
       }
@@ -278,9 +264,7 @@ components {
         ["slug"] = new Schema.PropertySchema {
           type = "string"
         }
-        ["owner"] = $.ref {
-          `$ref` = "#/components/schemas/user"
-        }
+        ["owner"] = $.ref("#/components/schemas/user")
       }
     }
     ["pullrequest"] {
@@ -292,12 +276,8 @@ components {
         ["title"] = new Schema.PropertySchema {
           type = "string"
         }
-        ["repository"] = $.ref {
-          `$ref` = "#/components/schemas/repository"
-        }
-        ["author"] = $.ref {
-          `$ref` = "#/components/schemas/user"
-        }
+        ["repository"] = $.ref("#/components/schemas/repository")
+        ["author"] = $.ref("#/components/schemas/user")
       }
     }
   }
