@@ -183,9 +183,9 @@ class Tag {
 class SecurityScheme {
   type: "apiKey" | "http" | "oauth2" | "openIdConnect"
   description: String?
-  name: String?((this == null).xor(type != "apiKey"))
-  `in`: ("query" | "header" | "cookie")?((this == null).xor(type != "apiKey"))
-  scheme: ("basic" | "bearer" | "digest" | "dpop" | "hoba" | "mutual" | "negotiate" | "oauth" | "privatetoken" | "scram-sha-1" | "scram-sha-256" | "vapid")?((this == null).xor(type != "http"))
+  name: String?((this != null).xor(type != "apiKey"))
+  `in`: ("query" | "header" | "cookie")?((this != null).xor(type != "apiKey"))
+  scheme: ("basic" | "bearer" | "digest" | "dpop" | "hoba" | "mutual" | "negotiate" | "oauth" | "privatetoken" | "scram-sha-1" | "scram-sha-256" | "vapid")?((this != null).xor(type != "http"))
   bearerFormat: String?(this == null || (type == "http" && scheme == "bearer"))
   flows: OAuthFlows?((this == null).xor(type != "oauth2"))
   openIdConnectUrl: String?((this == null).xor(type != "openIdConnect"))
