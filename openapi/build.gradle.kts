@@ -2,7 +2,9 @@ plugins {
   alias(libs.plugins.pkl)
 }
 
-val tag = providers.environmentVariable("GITHUB_TAG")
+val tag = providers.environmentVariable("GITHUB_TAG").map {
+  it.split('/').lastOrNull()?.removePrefix("v")
+}
 
 pkl {
   evaluators {
@@ -20,7 +22,7 @@ pkl {
     packagers {
       register("makePackages") {
         projectDirectories.from(file("."))
-        environmentVariables = tag.map { mapOf("PKL_PUBLISH_VERSION" to it.removePrefix("v")) }.orElse(emptyMap())
+        environmentVariables = tag.map { mapOf("PKL_PUBLISH_VERSION" to it) }.orElse(emptyMap())
       }
     }
   }
